@@ -150,6 +150,8 @@ resource "aws_lb_listener" "frontend" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.frontend.arn
   }
+
+  depends_on = [aws_lb_target_group.frontend]
 }
 
 resource "aws_lb_listener" "backend" {
@@ -161,4 +163,6 @@ resource "aws_lb_listener" "backend" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.backend.arn
   }
+
+  depends_on = [aws_lb_target_group.backend]
 }
