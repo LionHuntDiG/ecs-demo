@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  terraform-format-validate-plan:
-    name: Terraform Format, Validate, Init, and Plan
+  terraform-validate-init-plan:
+    name: Terraform Validate, Init, and Plan
     runs-on: ubuntu-latest
 
     steps:
@@ -39,7 +39,7 @@ jobs:
   manual-approval:
     name: Manual Approval
     runs-on: ubuntu-latest
-    needs: terraform-format-validate-plan
+    needs: terraform-validate-init-plan
     steps:
     - name: Waiting for approval
       run: |
