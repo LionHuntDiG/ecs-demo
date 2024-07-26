@@ -13,6 +13,10 @@ resource "aws_iam_role" "ecs_task_execution_role" {
       },
     ]
   })
+
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
+  ]
 }
 
 resource "aws_iam_policy" "dynamodb_access_policy" {
