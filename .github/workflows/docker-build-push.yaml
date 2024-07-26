@@ -31,8 +31,8 @@ jobs:
     - name: Build and push Docker images
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY_FRONTEND: ${{ secrets.ECR_FRONTEND_REPO }}
-        ECR_REPOSITORY_BACKEND: ${{ secrets.ECR_BACKEND_REPO }}
+        ECR_REPOSITORY_FRONTEND: myapp-frontend
+        ECR_REPOSITORY_BACKEND: myapp-backend
         IMAGE_TAG: latest
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG ./frontend
