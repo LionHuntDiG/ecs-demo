@@ -1,0 +1,45 @@
+name: ECS Update Tasks
+
+on:
+  workflow_run:
+    workflows: ["Docker Build and Push"]
+    types:
+      - completed
+
+jobs:
+  update-tasks:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Update Task Definition for Frontend
+      id: frontend_task_def
+      run: |
+        FRONTEND_TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition myapp-frontend)
+        NEW_FRONTEND_TASK_DEFINITION=$(echo $FRONTEND_TASK_DEFINITION | jq --arg IMAGE "$ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:latest" '.taskDefinition | .containerDefinitions[0].image = $IMAGE')
+        echo $NEW_FRONTEND_TASK_DEFINITION | jq '{containerDefinitions, family, networkMode, requiresCompatibilities, cpu, memory, executionRoleArn, taskRoleArn}' | aws ecs register-task-definition --cli-input-json -
+
+    - name: Update ECS Service for Frontend
+      run: |
+        FRONTEND_TASK_REVISION=$(aws ecs describe-task-definition --task-definition myapp-frontend | jq -r '.taskDefinition.revision')
+        aws ecs update-service --cluster myapp-cluster --service myapp-frontend-service --task-definition myapp-frontend:$FRONTEND_TASK_REVISION
+
+    - name: Update Task Definition for Backend
+      id: backend_task_def
+      run: |
+        BACKEND_TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition myapp-backend)
+        NEW_BACKEND_TASK_DEFINITION=$(echo $BACKEND_TASK_DEFINITION | jq --arg IMAGE "$ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:latest" '.taskDefinition | .containerDefinitions[0].image = $IMAGE')
+        echo $NEW_BACKEND_TASK_DEFINITION | jq '{containerDefinitions, family, networkMode, requiresCompatibilities, cpu, memory, executionRoleArn, taskRoleArn}' | aws ecs register-task-definition --cli-input-json -
+
+    - name: Update ECS Service for Backend
+      run: |
+        BACKEND_TASK_REVISION=$(aws ecs describe-task-definition --task-definition myapp-backend | jq -r '.taskDefinition.revision')
+        aws ecs update-service --cluster myapp-cluster --service myapp-backend-service --task-definition myapp-backend:$BACKEND_TASK_REVISION
