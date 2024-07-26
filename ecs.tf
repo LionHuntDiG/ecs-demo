@@ -1,3 +1,10 @@
+resource "aws_lb" "nlb" {
+  name               = "${var.project_name}-nlb"
+  internal           = false
+  load_balancer_type = "network"
+  subnets            = aws_subnet.public.*.id
+}
+
 resource "aws_ecs_cluster" "app_cluster" {
   name = "${var.project_name}-cluster"
 }
@@ -67,20 +74,9 @@ resource "aws_ecs_task_definition" "backend" {
           hostPort      = 80
         }
       ]
-      environment = [
-        {
-          name  = "AWS_REGION"
-          value = "us-east-1"
-        },
-        {
-          name  = "DYNAMODB_TABLE"
-          value = var.dynamodb_table_name
-        }
-      ]
     }
   ])
 }
-
 
 resource "aws_ecs_service" "frontend" {
   name            = "${var.project_name}-frontend"
@@ -126,13 +122,6 @@ resource "aws_ecs_service" "backend" {
   }
 
   depends_on = [aws_lb_listener.backend]
-}
-
-resource "aws_lb" "nlb" {
-  name               = "${var.project_name}-nlb"
-  internal           = false
-  load_balancer_type = "network"
-  subnets            = aws_subnet.public.*.id
 }
 
 resource "aws_lb_target_group" "frontend" {
