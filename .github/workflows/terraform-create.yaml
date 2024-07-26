@@ -69,6 +69,7 @@ jobs:
     
     - name: Terraform Init
       run: terraform init
-      
+
     - name: Terraform Apply
-      run: terraform apply -auto-approve
+      run: |
+       timeout 1800 terraform apply -auto-approve
