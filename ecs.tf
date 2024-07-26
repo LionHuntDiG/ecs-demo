@@ -67,9 +67,20 @@ resource "aws_ecs_task_definition" "backend" {
           hostPort      = 80
         }
       ]
+      environment = [
+        {
+          name  = "AWS_REGION"
+          value = "us-east-1"
+        },
+        {
+          name  = "DYNAMODB_TABLE"
+          value = var.dynamodb_table_name
+        }
+      ]
     }
   ])
 }
+
 
 resource "aws_ecs_service" "frontend" {
   name            = "${var.project_name}-frontend"
@@ -94,40 +105,28 @@ resource "aws_ecs_service" "frontend" {
   depends_on = [aws_lb_listener.frontend]
 }
 
-resource "aws_ecs_task_definition" "backend" {
-  family                   = "${var.project_name}-backend"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = "256"
-  memory                   = "512"
+resource "aws_ecs_service" "backend" {
+  name            = "${var.project_name}-backend"
+  cluster         = aws_ecs_cluster.app_cluster.id
+  task_definition = aws_ecs_task_definition.backend.arn
+  desired_count   = 1
 
-  execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
+  launch_type = "FARGATE"
 
-  container_definitions = jsonencode([
-    {
-      name      = "backend"
-      image     = "${var.project_name}-backend"
-      essential = true
-      portMappings = [
-        {
-          containerPort = 80
-          hostPort      = 80
-        }
-      ]
-      environment = [
-        {
-          name  = "AWS_REGION"
-          value = "us-east-1"
-        },
-        {
-          name  = "DYNAMODB_TABLE"
-          value = var.dynamodb_table_name
-        }
-      ]
-    }
-  ])
+  network_configuration {
+    subnets          = aws_subnet.public.*.id
+    security_groups  = [aws_security_group.ecs.id]
+    assign_public_ip = true
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.backend.arn
+    container_name   = "backend"
+    container_port   = 80
+  }
+
+  depends_on = [aws_lb_listener.backend]
 }
-
 
 resource "aws_lb" "nlb" {
   name               = "${var.project_name}-nlb"
