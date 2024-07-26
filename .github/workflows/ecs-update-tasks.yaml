@@ -5,6 +5,8 @@ on:
     workflows: ["Docker Build and Push"]
     types:
       - completed
+  workflow_dispatch:
+    
 
 jobs:
   update-tasks:
