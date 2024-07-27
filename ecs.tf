@@ -1,8 +1,22 @@
-resource "aws_lb" "nlb" {
-  name               = "${var.project_name}-nlb"
+provider "aws" {
+  region = "us-east-1"
+}
+
+variable "project_name" {
+  default = "myapp"
+}
+
+resource "aws_lb" "alb" {
+  name               = "${var.project_name}-alb"
   internal           = false
-  load_balancer_type = "network"
+  load_balancer_type = "application"
   subnets            = aws_subnet.public.*.id
+
+  enable_deletion_protection = false
+
+  tags = {
+    Name = "${var.project_name}-alb"
+  }
 }
 
 resource "aws_ecs_cluster" "app_cluster" {
@@ -174,7 +188,7 @@ resource "aws_lb_target_group" "backend" {
 }
 
 resource "aws_lb_listener" "frontend" {
-  load_balancer_arn = aws_lb.nlb.arn
+  load_balancer_arn = aws_lb.alb.arn
   port              = 80
   protocol          = "HTTP"
 
@@ -187,7 +201,7 @@ resource "aws_lb_listener" "frontend" {
 }
 
 resource "aws_lb_listener" "backend" {
-  load_balancer_arn = aws_lb.nlb.arn
+  load_balancer_arn = aws_lb.alb.arn
   port              = 5000
   protocol          = "HTTP"
 
@@ -197,4 +211,72 @@ resource "aws_lb_listener" "backend" {
   }
 
   depends_on = [aws_lb_target_group.backend]
+}
+
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "${var.project_name}-ecs-task-execution-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
+  ]
+}
+
+resource "aws_iam_policy" "dynamodb_access_policy" {
+  name = "${var.project_name}-dynamodb-access-policy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "dynamodb:DescribeTable",
+          "dynamodb:Query",
+          "dynamodb:Scan",
+          "dynamodb:GetItem",
+          "dynamodb:PutItem"
+        ]
+        Effect = "Allow"
+        Resource = [
+          "arn:aws:dynamodb:us-east-1:${data.aws_caller_identity.current.account_id}:table/MyNoSQLTable"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.dynamodb_access_policy.arn
+}
+
+data "aws_caller_identity" "current" {}
+
+resource "aws_ecr_repository" "frontend" {
+  name         = "${var.project_name}-frontend"
+  force_delete = true
+}
+
+resource "aws_ecr_repository" "backend" {
+  name         = "${var.project_name}-backend"
+  force_delete = true
+}
+
+output "frontend_ecr_repository_url" {
+  value = aws_ecr_repository.frontend.repository_url
+}
+
+output "backend_ecr_repository_url" {
+  value = aws_ecr_repository.backend.repository_url
 }
