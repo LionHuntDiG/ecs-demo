@@ -35,7 +35,7 @@ resource "aws_ecs_task_definition" "frontend" {
   container_definitions = jsonencode([
     {
       name      = "frontend"
-      image     = "${aws_ecr_repository.frontend.repository_url}:latest"
+      image     = "462585606803.dkr.ecr.us-east-1.amazonaws.com/myapp-frontend:latest"
       essential = true
       portMappings = [
         {
@@ -73,7 +73,7 @@ resource "aws_ecs_task_definition" "backend" {
   container_definitions = jsonencode([
     {
       name      = "backend"
-      image     = "${aws_ecr_repository.backend.repository_url}:latest"
+      image     = "462585606803.dkr.ecr.us-east-1.amazonaws.com/myapp-backend:latest"
       essential = true
       portMappings = [
         {
