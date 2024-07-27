@@ -61,8 +61,8 @@ resource "aws_iam_policy" "ecr_pull_policy" {
         ]
       },
       {
-        Effect = "Allow",
-        Action = "ecr:GetAuthorizationToken",
+        Effect   = "Allow",
+        Action   = "ecr:GetAuthorizationToken",
         Resource = "*"
       }
     ]
