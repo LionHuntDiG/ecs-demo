@@ -143,6 +143,16 @@ resource "aws_lb_target_group" "frontend" {
   protocol    = "TCP"
   vpc_id      = aws_vpc.app_vpc.id
   target_type = "ip"
+
+  health_check {
+    interval            = 30
+    path                = "/"
+    protocol            = "HTTP"
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    matcher             = "200"
+  }
 }
 
 resource "aws_lb_target_group" "backend" {
@@ -151,6 +161,16 @@ resource "aws_lb_target_group" "backend" {
   protocol    = "TCP"
   vpc_id      = aws_vpc.app_vpc.id
   target_type = "ip"
+
+  health_check {
+    interval            = 30
+    path                = "/api"
+    protocol            = "HTTP"
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    matcher             = "200"
+  }
 }
 
 resource "aws_lb_listener" "frontend" {

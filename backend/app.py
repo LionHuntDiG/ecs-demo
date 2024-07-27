@@ -13,8 +13,15 @@ def get_entries():
         response = table.scan(Limit=10)
         items = response.get('Items', [])
         return jsonify(items)
-    except (NoCredentialsError, PartialCredentialsError) as e:
-        return jsonify({"error": str(e)}), 500
+    except NoCredentialsError as e:
+        app.logger.error("No credentials error: %s", str(e))
+        return jsonify({"error": "No credentials error"}), 500
+    except PartialCredentialsError as e:
+        app.logger.error("Partial credentials error: %s", str(e))
+        return jsonify({"error": "Partial credentials error"}), 500
+    except Exception as e:
+        app.logger.error("Unexpected error: %s", str(e))
+        return jsonify({"error": "Unexpected error"}), 500
 
 @app.route('/api', methods=['POST'])
 def add_entry():
@@ -25,8 +32,15 @@ def add_entry():
             'email': data['email']
         })
         return jsonify({"message": "Data has been saved successfully!"})
-    except (NoCredentialsError, PartialCredentialsError) as e:
-        return jsonify({"error": str(e)}), 500
+    except NoCredentialsError as e:
+        app.logger.error("No credentials error: %s", str(e))
+        return jsonify({"error": "No credentials error"}), 500
+    except PartialCredentialsError as e:
+        app.logger.error("Partial credentials error: %s", str(e))
+        return jsonify({"error": "Partial credentials error"}), 500
+    except Exception as e:
+        app.logger.error("Unexpected error: %s", str(e))
+        return jsonify({"error": "Unexpected error"}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
