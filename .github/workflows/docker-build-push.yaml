@@ -57,7 +57,7 @@ jobs:
         aws ecs describe-task-definition --task-definition myapp-frontend --query taskDefinition > myapp-frontend.json
     
     - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
+      id: task-def-frontend
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: myapp-frontend.json
@@ -69,7 +69,7 @@ jobs:
         aws ecs describe-task-definition --task-definition myapp-backend --query taskDefinition > myapp-backend.json
     
     - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
+      id: task-def-backend
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: myapp-backend.json
