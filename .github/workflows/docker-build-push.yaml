@@ -79,7 +79,7 @@ jobs:
     - name: Deploy Amazon ECS frontend task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        task-definition: ${{ steps.task-def-frontend.outputs.task-definition }}
         service: myapp-frontend
         cluster: myapp-cluster
         wait-for-service-stability: true
@@ -87,7 +87,7 @@ jobs:
     - name: Deploy Amazon ECS  backend task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        task-definition: ${{ steps.task-def-backend.outputs.task-definition }}
         service: myapp-backend
         cluster: myapp-cluster
         wait-for-service-stability: true
