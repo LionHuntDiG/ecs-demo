@@ -17,15 +17,13 @@ resource "aws_s3_bucket_policy" "alb_logs_policy" {
         Resource = "${aws_s3_bucket.alb_logs.arn}/*",
         Condition = {
           StringEquals = {
-            "aws:SourceAccount" = "462585606803" # Replace with your AWS Account ID
+            "aws:SourceAccount" = "462585606803" # Ensure this is your AWS Account ID
           },
           ArnLike = {
-            "aws:SourceArn" = "arn:aws:elasticloadbalancing:us-east-1:462585606803:loadbalancer/*"
+            "aws:SourceArn" = "arn:aws:elasticloadbalancing:us-east-1:462585606803:loadbalancer/app/myapp-alb/703224e881eac8b4"
           }
         }
       }
     ]
   })
 }
-
-
