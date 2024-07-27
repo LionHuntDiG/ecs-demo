@@ -1,12 +1,23 @@
-# Build stage
-FROM python:3.8-slim as builder
-WORKDIR /app
-COPY app.py /app
-RUN pip install Flask boto3
-
-# Final stage
+# Use an official Python runtime as a parent image
 FROM python:3.8-slim
+
+# Set the working directory in the container
 WORKDIR /app
-COPY --from=builder /app /app
+
+# Copy the requirements file into the container at /app
+COPY requirements.txt /app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the working directory contents into the container at /app
+COPY . /app
+
+# Make port 5000 available to the world outside this container
 EXPOSE 5000
+
+# Define environment variable
+ENV NAME World
+
+# Run app.py when the container launches
 CMD ["python", "app.py"]
