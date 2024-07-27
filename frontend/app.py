@@ -1,12 +1,16 @@
 from flask import Flask, render_template, request, jsonify
 import requests
+import os
 
 app = Flask(__name__)
+
+# Get the backend URL from the environment variable
+backend_url = os.getenv('BACKEND_URL', 'http://localhost:5000/api')
 
 @app.route('/')
 def index():
     try:
-        response = requests.get('http://myapp-backend:5000/api')
+        response = requests.get(backend_url)
         data = response.json()
         return render_template('index.html', data=data)
     except Exception as e:
@@ -16,7 +20,7 @@ def index():
 def submit():
     username = request.form['username']
     email = request.form['email']
-    response = requests.post('http://myapp-backend:5000/api', json={'username': username, 'email': email})
+    response = requests.post(backend_url, json={'username': username, 'email': email})
     if response.status_code == 200:
         return jsonify({'message': 'Data has been saved successfully!'})
     else:

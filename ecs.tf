@@ -42,8 +42,19 @@ resource "aws_ecs_task_definition" "frontend" {
         {
           name  = "DYNAMODB_TABLE"
           value = "MyNoSQLTable"
+        },
+        {
+          name  = "BACKEND_URL"
+          value = "http://myapp-backend:5000/api"
         }
       ]
+      healthCheck = {
+        command     = ["CMD-SHELL", "curl -f http://localhost/health || exit 1"]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 10
+      }
     }
   ])
 
@@ -82,6 +93,13 @@ resource "aws_ecs_task_definition" "backend" {
           value = "MyNoSQLTable"
         }
       ]
+      healthCheck = {
+        command     = ["CMD-SHELL", "curl -f http://localhost/api || exit 1"]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 10
+      }
     }
   ])
 
