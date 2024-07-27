@@ -33,6 +33,26 @@
         .list-group-item:nth-child(even) {
             background-color: #e9ecef;
         }
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .entries-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 300px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .entries-container h5 {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -49,29 +69,28 @@
             </div>
             <button type="submit" class="btn btn-primary btn-block">Submit</button>
         </form>
-        <div class="card">
-            <div class="card-header">
-                Last 10 Entries
-            </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Username</th>
-                        <th scope="col">Email</th>
-                    </tr>
-                </thead>
-                <tbody id="dataList">
-                    {% for entry in data %}
-                    <tr>
-                        <th scope="row">{{ loop.index }}</th>
-                        <td>{{ entry.username }}</td>
-                        <td>{{ entry.email }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    </div>
+
+    <div class="entries-container">
+        <h5>Last 10 Entries</h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                </tr>
+            </thead>
+            <tbody id="dataList">
+                {% for entry in data %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>{{ entry.username }}</td>
+                    <td>{{ entry.email }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 
     <script>
