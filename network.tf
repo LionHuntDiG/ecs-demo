@@ -1,3 +1,9 @@
+resource "aws_service_discovery_private_dns_namespace" "app_namespace" {
+  name        = "${var.project_name}.local"
+  description = "Private DNS namespace for ${var.project_name} ECS services"
+  vpc         = aws_vpc.app_vpc.id
+}
+
 resource "aws_vpc" "app_vpc" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true

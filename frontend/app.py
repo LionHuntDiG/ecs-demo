@@ -5,7 +5,8 @@ import os
 app = Flask(__name__)
 
 # Get the backend URL from the environment variable
-backend_url = os.getenv('BACKEND_URL', 'http://localhost:5000/api')
+# Get the backend URL from the environment variable
+backend_url = os.getenv('BACKEND_URL', 'http://backend.myapp.local:5000/api')
 
 @app.route('/')
 def index():

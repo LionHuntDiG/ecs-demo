@@ -45,7 +45,7 @@ resource "aws_ecs_task_definition" "frontend" {
         },
         {
           name  = "BACKEND_URL"
-          value = "http://myapp-backend:5000/api"
+          value = "http://backend.${var.project_name}.local:5000/api"
         }
       ]
       healthCheck = {
@@ -146,6 +146,9 @@ resource "aws_ecs_service" "backend" {
     security_groups  = [aws_security_group.ecs.id]
     assign_public_ip = true
   }
+  service_registries {
+    registry_arn = aws_service_discovery_service.backend.arn
+  }
 
   load_balancer {
     target_group_arn = aws_lb_target_group.backend.arn
@@ -220,4 +223,18 @@ resource "aws_lb_listener" "backend" {
   }
 
   depends_on = [aws_lb_target_group.backend]
+}
+
+resource "aws_service_discovery_service" "backend" {
+  name = "backend"
+  dns_config {
+    namespace_id = aws_service_discovery_private_dns_namespace.app_namespace.id
+    dns_records {
+      ttl  = 10
+      type = "A"
+    }
+  }
+  health_check_custom_config {
+    failure_threshold = 1
+  }
 }
