@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     try:
-        response = requests.get('http://backend:5000/api')
+        response = requests.get('http://myapp-backend:5000/api')
         data = response.json()
         return render_template('index.html', data=data)
     except Exception as e:
@@ -16,7 +16,7 @@ def index():
 def submit():
     username = request.form['username']
     email = request.form['email']
-    response = requests.post('http://backend:5000/api', json={'username': username, 'email': email})
+    response = requests.post('http://myapp-backend:5000/api', json={'username': username, 'email': email})
     if response.status_code == 200:
         return jsonify({'message': 'Data has been saved successfully!'})
     else:
