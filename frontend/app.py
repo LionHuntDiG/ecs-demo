@@ -5,9 +5,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    response = requests.get('http://backend:5000/api')
-    data = response.json()
-    return render_template('index.html', data=data)
+    try:
+        response = requests.get('http://backend:5000/api')
+        data = response.json()
+        return render_template('index.html', data=data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -18,6 +21,10 @@ def submit():
         return jsonify({'message': 'Data has been saved successfully!'})
     else:
         return jsonify({'message': 'Failed to save data.'}), 400
+
+@app.route('/health')
+def health():
+    return jsonify({'status': 'ok'}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80)

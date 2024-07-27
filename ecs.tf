@@ -150,7 +150,7 @@ resource "aws_lb_target_group" "frontend" {
 
   health_check {
     interval            = 30
-    path                = "/"
+    path                = "/health"
     protocol            = "HTTP"
     timeout             = 5
     healthy_threshold   = 2
