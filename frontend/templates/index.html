@@ -13,6 +13,20 @@
             background-color: #e9ecef;
             padding-top: 50px;
         }
+        .dark-mode {
+            background-color: #2c2c2c;
+            color: white;
+        }
+        .dark-mode .container, .dark-mode .entries-container, .dark-mode .form-container {
+            background-color: #3c3c3c;
+            border-color: #555;
+        }
+        .dark-mode .card-header, .dark-mode .separator {
+            background-color: #007bff;
+        }
+        .dark-mode .alert {
+            color: black;
+        }
         .container {
             max-width: 600px;
         }
@@ -48,6 +62,9 @@
         .entries-container tr:nth-child(even) {
             background-color: #f8f9fa;
         }
+        .dark-mode .entries-container tr:nth-child(even) {
+            background-color: #4c4c4c;
+        }
         .alert {
             position: fixed;
             top: 20px;
@@ -72,14 +89,25 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             background-color: #fff;
         }
+        .dark-mode .form-container {
+            background-color: #3c3c3c;
+            border-color: #555;
+        }
         .form-container label {
             font-weight: bold;
+        }
+        .dark-mode .form-container label {
+            color: white;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="title">Welcome to Hypha Webinar</h1>
+        <div class="text-right mb-3">
+            <label for="darkModeToggle">Dark Mode</label>
+            <input type="checkbox" id="darkModeToggle">
+        </div>
         <div class="form-container">
             <h2 class="text-center">User Information</h2>
             <form id="userForm">
@@ -147,6 +175,11 @@
                           '</button></div>').prependTo('.container').delay(3000).fadeOut();
                     }
                 });
+            });
+
+            // Toggle dark mode
+            $('#darkModeToggle').on('change', function() {
+                $('body').toggleClass('dark-mode');
             });
         });
     </script>
