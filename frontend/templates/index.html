@@ -10,7 +10,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #e9ecef;
             padding-top: 50px;
         }
         .container {
@@ -18,6 +18,20 @@
         }
         .card {
             margin-top: 20px;
+            border: 1px solid #ddd;
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+        }
+        .list-group-item {
+            border: 1px solid #ddd;
+        }
+        .list-group-item:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
+        .list-group-item:nth-child(even) {
+            background-color: #e9ecef;
         }
     </style>
 </head>
@@ -39,11 +53,24 @@
             <div class="card-header">
                 Last 10 Entries
             </div>
-            <ul class="list-group list-group-flush" id="dataList">
-                {% for entry in data %}
-                <li class="list-group-item">{{ entry.username }} - {{ entry.email }}</li>
-                {% endfor %}
-            </ul>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                    </tr>
+                </thead>
+                <tbody id="dataList">
+                    {% for entry in data %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ entry.username }}</td>
+                        <td>{{ entry.email }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -59,11 +86,19 @@
                         email: $('#email').val()
                     },
                     success: function(response) {
-                        alert(response.message);
-                        location.reload();
+                        $('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                          'Data has been saved successfully!' +
+                          '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                          '<span aria-hidden="true">&times;</span>' +
+                          '</button></div>').prependTo('.container').delay(3000).fadeOut();
+                        setTimeout(function(){ location.reload(); }, 3000);
                     },
                     error: function(response) {
-                        alert('Failed to save data.');
+                        $('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+                          'Failed to save data.' +
+                          '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                          '<span aria-hidden="true">&times;</span>' +
+                          '</button></div>').prependTo('.container').delay(3000).fadeOut();
                     }
                 });
             });
