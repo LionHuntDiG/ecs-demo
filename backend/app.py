@@ -29,7 +29,8 @@ def add_entry():
     try:
         table.put_item(Item={
             'username': data['username'],
-            'email': data['email']
+            'email': data['email'],
+            'ID': data.get('ID')  # Ensure you include the primary key attribute
         })
         return jsonify({"message": "Data has been saved successfully!"})
     except NoCredentialsError as e:
