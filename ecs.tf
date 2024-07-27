@@ -140,7 +140,7 @@ resource "aws_ecs_service" "backend" {
 resource "aws_lb_target_group" "frontend" {
   name        = "${var.project_name}-frontend-tg"
   port        = 80
-  protocol    = "TCP"
+  protocol    = "http"
   vpc_id      = aws_vpc.app_vpc.id
   target_type = "ip"
 
@@ -158,7 +158,7 @@ resource "aws_lb_target_group" "frontend" {
 resource "aws_lb_target_group" "backend" {
   name        = "${var.project_name}-backend-tg"
   port        = 5000
-  protocol    = "TCP"
+  protocol    = "http"
   vpc_id      = aws_vpc.app_vpc.id
   target_type = "ip"
 
@@ -176,7 +176,7 @@ resource "aws_lb_target_group" "backend" {
 resource "aws_lb_listener" "frontend" {
   load_balancer_arn = aws_lb.nlb.arn
   port              = 80
-  protocol          = "TCP"
+  protocol          = "http"
 
   default_action {
     type             = "forward"
@@ -189,7 +189,7 @@ resource "aws_lb_listener" "frontend" {
 resource "aws_lb_listener" "backend" {
   load_balancer_arn = aws_lb.nlb.arn
   port              = 5000
-  protocol          = "TCP"
+  protocol          = "http"
 
   default_action {
     type             = "forward"
