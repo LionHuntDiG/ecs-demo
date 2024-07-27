@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 import uuid
+import time
 
 app = Flask(__name__)
 
@@ -31,7 +32,8 @@ def add_entry():
         table.put_item(Item={
             'ID': str(uuid.uuid4()),  # Generate a unique ID
             'username': data['username'],
-            'email': data['email']
+            'email': data['email'],
+            'timestamp': int(time.time())  # Current timestamp
         })
         return jsonify({"message": "Data has been saved successfully!"})
     except NoCredentialsError as e:

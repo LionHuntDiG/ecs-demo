@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, jsonify
 import requests
 import os
+import time
 
 app = Flask(__name__)
 
-# Get the backend URL from the environment variable
 # Get the backend URL from the environment variable
 backend_url = os.getenv('BACKEND_URL', 'http://backend.myapp.local:5000/api')
 
@@ -13,7 +13,12 @@ def index():
     try:
         response = requests.get(backend_url)
         data = response.json()
-        return render_template('index.html', data=data)
+        
+        # Sort the entries by timestamp and get the latest 10 entries
+        sorted_data = sorted(data, key=lambda x: x.get('timestamp', 0), reverse=True)
+        latest_data = sorted_data[:10]
+        
+        return render_template('index.html', data=latest_data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -21,7 +26,9 @@ def index():
 def submit():
     username = request.form['username']
     email = request.form['email']
-    response = requests.post(backend_url, json={'username': username, 'email': email})
+    timestamp = int(time.time())  # Current timestamp
+    
+    response = requests.post(backend_url, json={'username': username, 'email': email, 'timestamp': timestamp})
     if response.status_code == 200:
         return jsonify({'message': 'Data has been saved successfully!'})
     else:

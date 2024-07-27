@@ -45,6 +45,9 @@
             padding: 10px;
             border: 1px solid #ddd;
         }
+        .entries-container tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
         .alert {
             position: fixed;
             top: 20px;
@@ -56,22 +59,41 @@
             margin-top: 40px;
             margin-bottom: 20px;
         }
+        .title {
+            text-align: center;
+            color: #28a745; /* Bright green color */
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        .form-container {
+            border: 2px solid #87CEEB; /* Sky blue color */
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        .form-container label {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2 class="text-center">User Information</h2>
-        <form id="userForm">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Submit</button>
-        </form>
+        <h1 class="title">Welcome to Hypha Webinar</h1>
+        <div class="form-container">
+            <h2 class="text-center">User Information</h2>
+            <form id="userForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            </form>
+        </div>
     </div>
 
     <div class="separator"></div>
