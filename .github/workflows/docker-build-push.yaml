@@ -35,7 +35,7 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY_FRONTEND: myapp-frontend
-        IMAGE_TAG: latest
+        IMAGE_TAG: ${{ github.sha }}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG ./frontend
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_FRONTEND:$IMAGE_TAG
@@ -46,7 +46,7 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY_BACKEND: myapp-backend
-        IMAGE_TAG: latest
+        IMAGE_TAG: ${{ github.sha }}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG ./backend
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_BACKEND:$IMAGE_TAG
@@ -82,7 +82,6 @@ jobs:
         task-definition: ${{ steps.task-def-frontend.outputs.task-definition }}
         service: myapp-frontend
         cluster: myapp-cluster
-        wait-for-service-stability: true
 
     - name: Deploy Amazon ECS  backend task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -90,4 +89,3 @@ jobs:
         task-definition: ${{ steps.task-def-backend.outputs.task-definition }}
         service: myapp-backend
         cluster: myapp-cluster
-        wait-for-service-stability: true
