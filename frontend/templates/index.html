@@ -24,14 +24,26 @@
             background-color: #007bff;
             color: white;
         }
-        .list-group-item {
+        .entries-container {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #fff;
             border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
         }
-        .list-group-item:nth-child(odd) {
-            background-color: #f8f9fa;
+        .entries-container h5 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
         }
-        .list-group-item:nth-child(even) {
-            background-color: #e9ecef;
+        .entries-container table {
+            width: 100%;
+            font-size: 1.2em;
+        }
+        .entries-container th, .entries-container td {
+            padding: 10px;
+            border: 1px solid #ddd;
         }
         .alert {
             position: fixed;
@@ -39,19 +51,10 @@
             right: 20px;
             z-index: 1000;
         }
-        .entries-container {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            width: 300px;
-            border: 1px solid #ddd;
-            background-color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .entries-container h5 {
-            margin-bottom: 10px;
+        .separator {
+            border-top: 3px solid #007bff;
+            margin-top: 40px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -71,9 +74,11 @@
         </form>
     </div>
 
+    <div class="separator"></div>
+
     <div class="entries-container">
         <h5>Last 10 Entries</h5>
-        <table class="table">
+        <table>
             <thead>
                 <tr>
                     <th scope="col">#</th>
