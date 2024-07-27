@@ -57,26 +57,3 @@ resource "aws_route_table_association" "public_assoc" {
   depends_on = [aws_route_table.public, aws_subnet.public]
 }
 
-resource "aws_security_group" "ecs" {
-  name        = "${var.project_name}-ecs-sg"
-  description = "Security group for ECS tasks"
-  vpc_id      = aws_vpc.app_vpc.id
-
-  ingress {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "${var.project_name}-ecs-sg"
-  }
-}
