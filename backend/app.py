@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
+import uuid
 
 app = Flask(__name__)
 
@@ -28,9 +29,9 @@ def add_entry():
     data = request.get_json()
     try:
         table.put_item(Item={
+            'ID': str(uuid.uuid4()),  # Generate a unique ID
             'username': data['username'],
-            'email': data['email'],
-            'ID': data.get('ID')  # Ensure you include the primary key attribute
+            'email': data['email']
         })
         return jsonify({"message": "Data has been saved successfully!"})
     except NoCredentialsError as e:
