@@ -15,14 +15,13 @@ resource "aws_ecs_task_definition" "frontend" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"
   memory                   = "512"
-
-  execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
-  task_role_arn      = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
       name      = "frontend"
-      image     = "462585606803.dkr.ecr.us-east-1.amazonaws.com/myapp-frontend:latest"
+      image     = "${aws_ecr_repository.frontend.repository_url}:latest"
       essential = true
       portMappings = [
         {
@@ -42,6 +41,10 @@ resource "aws_ecs_task_definition" "frontend" {
       ]
     }
   ])
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_ecs_task_definition" "backend" {
@@ -50,14 +53,13 @@ resource "aws_ecs_task_definition" "backend" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"
   memory                   = "512"
-
-  execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
-  task_role_arn      = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
       name      = "backend"
-      image     = "462585606803.dkr.ecr.us-east-1.amazonaws.com/myapp-backend:latest"
+      image     = "${aws_ecr_repository.backend.repository_url}:latest"
       essential = true
       portMappings = [
         {
@@ -77,6 +79,10 @@ resource "aws_ecs_task_definition" "backend" {
       ]
     }
   ])
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_ecs_service" "frontend" {
@@ -84,8 +90,7 @@ resource "aws_ecs_service" "frontend" {
   cluster         = aws_ecs_cluster.app_cluster.id
   task_definition = aws_ecs_task_definition.frontend.arn
   desired_count   = 1
-
-  launch_type = "FARGATE"
+  launch_type     = "FARGATE"
 
   network_configuration {
     subnets          = aws_subnet.public.*.id
@@ -100,6 +105,10 @@ resource "aws_ecs_service" "frontend" {
   }
 
   depends_on = [aws_lb_listener.frontend]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_ecs_service" "backend" {
@@ -107,8 +116,7 @@ resource "aws_ecs_service" "backend" {
   cluster         = aws_ecs_cluster.app_cluster.id
   task_definition = aws_ecs_task_definition.backend.arn
   desired_count   = 1
-
-  launch_type = "FARGATE"
+  launch_type     = "FARGATE"
 
   network_configuration {
     subnets          = aws_subnet.public.*.id
@@ -123,6 +131,10 @@ resource "aws_ecs_service" "backend" {
   }
 
   depends_on = [aws_lb_listener.backend]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_lb_target_group" "frontend" {
