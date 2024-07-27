@@ -12,7 +12,7 @@ table = dynamodb.Table('MyNoSQLTable')
 @app.route('/api', methods=['GET'])
 def get_entries():
     try:
-        response = table.scan(Limit=10)
+        response = table.scan()
         items = response.get('Items', [])
         return jsonify(items)
     except NoCredentialsError as e:

@@ -14,7 +14,11 @@ def index():
         response = requests.get(backend_url)
         data = response.json()
         
-        # Sort the entries by timestamp and get the latest 10 entries
+        # Ensure all timestamps are integers and sort the entries by timestamp
+        for entry in data:
+            if 'timestamp' in entry:
+                entry['timestamp'] = int(entry['timestamp'])
+        
         sorted_data = sorted(data, key=lambda x: x.get('timestamp', 0), reverse=True)
         latest_data = sorted_data[:10]
         
