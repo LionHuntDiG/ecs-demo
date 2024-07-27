@@ -48,13 +48,6 @@ resource "aws_ecs_task_definition" "frontend" {
           value = "http://backend.${var.project_name}.local:5000/api"
         }
       ]
-      healthCheck = {
-        path        = "/health"
-        interval    = 30
-        timeout     = 5
-        retries     = 3
-        startPeriod = 10
-      }
     }
   ])
 
@@ -93,14 +86,7 @@ resource "aws_ecs_task_definition" "backend" {
           value = "MyNoSQLTable"
         }
       ]
-      healthCheck = {
-        path        = "/api"
-        interval    = 30
-        timeout     = 5
-        retries     = 3
-        startPeriod = 10
       }
-    }
   ])
 
   lifecycle {
