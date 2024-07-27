@@ -5,6 +5,12 @@ resource "aws_lb" "alb" {
   subnets            = aws_subnet.public.*.id
   security_groups    = [aws_security_group.ecs.id]
 
+  access_logs {
+    bucket  = aws_s3_bucket.alb_logs.bucket
+    prefix  = "access-logs"
+    enabled = true
+  }
+
   tags = {
     Name = "${var.project_name}-alb"
   }
@@ -48,6 +54,14 @@ resource "aws_ecs_task_definition" "frontend" {
           value = "http://backend.${var.project_name}.local:5000/api"
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/${var.project_name}-frontend"
+          awslogs-region        = "us-east-1"
+          awslogs-stream-prefix = "ecs"
+        }
+      }
     }
   ])
 
@@ -86,6 +100,14 @@ resource "aws_ecs_task_definition" "backend" {
           value = "MyNoSQLTable"
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/${var.project_name}-backend"
+          awslogs-region        = "us-east-1"
+          awslogs-stream-prefix = "ecs"
+        }
+      }
       }
   ])
 
