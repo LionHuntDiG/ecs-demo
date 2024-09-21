@@ -5,6 +5,6 @@ terraform {
   backend "s3" {
     bucket = "ecs-demo-s3-state-2024"
     key    = "terraform-state"
-    region = "us-west-2"
+    region = "us-east-1"
   }
 }
