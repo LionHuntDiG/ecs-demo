@@ -20,5 +20,5 @@ variable "dynamodb_table_name" {
 variable "account" {
   description = "AWS account ID for the ECR repository"
   type        = string
-  default = "462585606803"
+  default     = "462585606803"
 }
