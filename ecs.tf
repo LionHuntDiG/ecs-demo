@@ -144,10 +144,11 @@ resource "aws_ecs_service" "backend" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = aws_subnet.public.*.id
-    security_groups  = [aws_security_group.ecs.id]
-    assign_public_ip = true
+    subnets          = aws_subnet.private.*.id
+    security_groups  = [aws_security_group.backend.id]
+    assign_public_ip = false
   }
+
   service_registries {
     registry_arn = aws_service_discovery_service.backend.arn
   }
@@ -164,6 +165,7 @@ resource "aws_ecs_service" "backend" {
     create_before_destroy = true
   }
 }
+
 
 resource "aws_lb_target_group" "frontend" {
   name        = "${var.project_name}-frontend-tg"

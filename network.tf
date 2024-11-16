@@ -63,3 +63,14 @@ resource "aws_route_table_association" "public_assoc" {
   depends_on = [aws_route_table.public, aws_subnet.public]
 }
 
+resource "aws_subnet" "private" {
+  count                   = length(var.subnet_cidrs)
+  vpc_id                  = aws_vpc.app_vpc.id
+  cidr_block              = element(var.subnet_cidrs, count.index + length(var.subnet_cidrs)) # Adjust CIDRs as needed
+  availability_zone       = element(data.aws_availability_zones.available.names, count.index)
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name = "${var.project_name}-private-subnet-${count.index}"
+  }
+}
