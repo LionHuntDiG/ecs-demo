@@ -68,16 +68,16 @@ resource "aws_security_group" "dynamodb" {
   vpc_id = aws_vpc.app_vpc.id
 
   ingress {
-    from_port   = -1
-    to_port     = -1
-    protocol    = "-1"
-    cidr_blocks = ["10.0.0.0/16"] # Allow traffic from within the VPC (backend access)
+    from_port   = 0       # Use 0 for the 'ALL' protocol
+    to_port     = 0       # Use 0 for the 'ALL' protocol
+    protocol    = "-1"    # Represents "ALL" protocols
+    cidr_blocks = ["10.0.0.0/16"] # Allow traffic from within the VPC
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port   = 0       # Use 0 for the 'ALL' protocol
+    to_port     = 0       # Use 0 for the 'ALL' protocol
+    protocol    = "-1"    # Represents "ALL" protocols
     cidr_blocks = ["0.0.0.0/0"] # Allow all outbound traffic
   }
 
